@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title> احسبو معدلاتكم يا تلاميذ ملحقة المسيلة ()</title>
+  <style>
+    :root{
+      --bg:#070b16;
+      --card: rgba(255,255,255,.06);
+      --line: rgba(255,255,255,.10);
+      --txt:#eaf0ff;
+      --muted:#a6b3d6;
+      --accent:#7aa7ff;
+      --good:#33d17a;
+      --bad:#ff5c5c;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r:22px;
+    }
+    *{box-sizing:border-box}
+    html, body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden; /* أهم شيء لمنع السحب يمين/يسار */
+    }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      color:var(--txt);
+      min-height:100vh;
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(122,167,255,.22), transparent 60%),
+        radial-gradient(900px 520px at 95% 40%, rgba(51,209,122,.14), transparent 55%),
+        radial-gradient(1000px 600px at 40% 110%, rgba(255,92,92,.10), transparent 60%),
+        linear-gradient(180deg, #060916 0%, #070b16 60%, #060916 100%);
+    }
+    .wrap{
+      max-width: 720px; /* موجه للموبايل */
+      margin:0 auto;
+      padding: 18px 14px 30px;
+    }
+
+    header{
+      padding: 10px 0 12px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:1.25rem;
+      line-height:1.35;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:.98rem;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border-radius:var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .toolbar{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding:14px;
+      border-bottom:1px solid var(--line);
+      background: rgba(0,0,0,.12);
+    }
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(122,167,255,.28);
+      background: rgba(122,167,255,.10);
+      color:var(--txt);
+      font-variant-numeric: tabular-nums;
+      white-space:nowrap;
+    }
+    .pill b{font-weight:800}
+    .pill.green{border-color: rgba(51,209,122,.34); background: rgba(51,209,122,.12)}
+    .btn{
+      cursor:pointer;
+      border-radius:14px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--txt);
+      transition: transform .08s ease, filter .18s ease, border-color .18s ease;
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+      font-weight:700;
+      width: 100%;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.danger{
+      border-color: rgba(255,92,92,.35);
+      background: rgba(255,92,92,.08);
+    }
+    .hint{color:var(--muted); font-size:.95rem}
+
+    /* كروت المواد */
+    .subjects{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .subjectCard{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 18px;
+      padding:12px;
+    }
+    .topLine{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .name{
+      font-weight:850;
+      font-size:1.02rem;
+      letter-spacing:.2px;
+    }
+    .coef{
+      font-size:.95rem;
+      color: var(--muted);
+    }
+
+    .inputs{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    label{
+      display:block;
+      font-size:.88rem;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+    input{
+      width:100%;
+      padding:11px 10px;
+      border-radius:14px;
+      border:1px solid rgba(166,179,214,.22);
+      background: rgba(0,0,0,.25);
+      color:var(--txt);
+      outline:none;
+      font-variant-numeric: tabular-nums;
+    }
+    input:focus{
+      border-color: rgba(122,167,255,.62);
+      box-shadow:0 0 0 3px rgba(122,167,255,.16);
+    }
+
+    .results{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .box{
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-variant-numeric: tabular-nums;
+    }
+    .box .tag{color:var(--muted); font-size:.88rem}
+    .box b{font-weight:900}
+
+    /* ملخص */
+    .summary{
+      margin-top:14px;
+      padding:14px;
+    }
+    .big{
+      font-size:2.25rem;
+      margin:8px 0 2px;
+      font-weight:950;
+      font-variant-numeric: tabular-nums;
+    }
+    .msg{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      line-height:1.9;
+      display:none;
+    }
+    .msg.show{display:block}
+    .signature{
+      margin-top:12px;
+      text-align:center;
+      color: rgba(166,179,214,.9);
+      font-size:.95rem;
+    }
+
+    /* تحسينات للموبايل */
+    @media (min-width: 520px){
+      .btn{width:auto}
+      .toolbar{flex-direction:row; flex-wrap:wrap; align-items:center; justify-content:space-between}
+      .row{width:auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>حاسبة المعدّل — TD×0.33 + الاختبار×0.67</h1>
+      <p class="sub">مواد ثابتة (12) — مجموع المعاملات <b>19</b>. أدخل العلامات وستظهر النتائج مباشرة.</p>
+    </header>
+
+    <div class="card">
+      <div class="toolbar">
+        <div class="row">
+          <span class="pill">TD: <b>0.33</b></span>
+          <span class="pill">الاختبار: <b>0.67</b></span>
+          <span class="pill green">المعاملات: <b>19</b></span>
+        </div>
+        <div class="row" style="width:100%">
+          <button class="btn" id="fillDemo">تعبئة تجريبية</button>
+          <button class="btn danger" id="reset">مسح العلامات</button>
+        </div>
+        <div class="hint">اكتب 12.5 أو 12,5 — بدون سحب يمين/يسار ✅</div>
+      </div>
+
+      <div class="subjects" id="subjects"></div>
+
+      <div class="summary">
+        <span class="pill">المعدل العام</span>
+        <div class="big" id="overall">0.00</div>
+        <p class="sub" style="margin-top:6px">الحساب: مجموع (معدل المادة × معاملها) ÷ 19</p>
+
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px">
+          <span class="pill" style="border-color:rgba(255,255,255,.14); background:rgba(255,255,255,.06)">
+            مجموع (م×م): <b id="sumWeighted">0.00</b>
+          </span>
+          <span class="pill" style="border-color:rgba(255,255,255,.14); background:rgba(255,255,255,.06)">
+            مواد مُدخلة: <b id="filledCount">0</b>/12
+          </span>
+        </div>
+
+        <div class="msg" id="successMsg">
+          بصحتك راك نجحت/ي يا باندية ولا باندي و نتمنى لك الرسوب مستقبلا مع تحدياتي لكم بالنجاح 🫠
+        </div>
+
+        <div class="signature">هذا الموقع من تطوير حروز نسيم</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const WEIGHT_TD = 0.33;
+  const WEIGHT_EXAM = 0.67;
+  const TOTAL_COEF = 19;
+  const STORAGE_KEY = "harouz_moyenne_19_mobile_v1";
+
+  const subjectsData = [
+    { name: "الأدب العربي", coef: 2 },
+    { name: "الرياضيات", coef: 2 },
+    { name: "الصرف", coef: 2 },
+    { name: "النحو", coef: 2 },
+    { name: "الفيزياء", coef: 2 },
+    { name: "الكيمياء", coef: 2 },
+    { name: "الشريعة", coef: 2 },
+    { name: "الإملاء", coef: 1 },
+    { name: "التكنولوجيا", coef: 1 },
+    { name: "فنيات التعبير", coef: 1 },
+    { name: "الإنجلزية", coef: 1 },
+    { name: "البلاغة", coef: 1 },
+  ];
+
+  const subjectsEl = document.getElementById("subjects");
+  const overallEl = document.getElementById("overall");
+  const sumWeightedEl = document.getElementById("sumWeighted");
+  const filledCountEl = document.getElementById("filledCount");
+  const successMsg = document.getElementById("successMsg");
+  const resetBtn = document.getElementById("reset");
+  const fillDemoBtn = document.getElementById("fillDemo");
+
+  function parseNum(v){
+    v = String(v ?? "").trim().replace(",", ".");
+    if (v === "") return NaN;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : NaN;
+  }
+  function clampNonNeg(n){
+    if (!Number.isFinite(n)) return NaN;
+    return Math.max(0, n);
+  }
+  function fmt2(n){
+    return Number.isFinite(n) ? n.toFixed(2) : "—";
+  }
+
+  function computeSubjectAvg(td, exam){
+    const a = clampNonNeg(td);
+    const b = clampNonNeg(exam);
+    if (!Number.isFinite(a) && !Number.isFinite(b)) return NaN;
+    if (!Number.isFinite(a)) return b;
+    if (!Number.isFinite(b)) return a;
+    return (a * WEIGHT_TD) + (b * WEIGHT_EXAM);
+  }
+
+  function render(){
+    subjectsEl.innerHTML = "";
+    subjectsData.forEach((s, i) => {
+      const card = document.createElement("div");
+      card.className = "subjectCard";
+      card.dataset.index = i;
+
+      card.innerHTML = `
+        <div class="topLine">
+          <div class="name">${s.name}</div>
+          <div class="coef">المعامل: <b>${s.coef}</b></div>
+        </div>
+
+        <div class="inputs">
+          <div>
+            <label>TD</label>
+            <input class="td" inputmode="decimal" placeholder="مثال: 12.5" />
+          </div>
+          <div>
+            <label>الاختبار</label>
+            <input class="exam" inputmode="decimal" placeholder="مثال: 14" />
+          </div>
+        </div>
+
+        <div class="results">
+          <div class="box">
+            <span class="tag">معدل المادة</span>
+            <b class="avg">—</b>
+          </div>
+          <div class="box">
+            <span class="tag">معدل×معامل</span>
+            <b class="weighted">—</b>
+          </div>
+        </div>
+      `;
+
+      card.querySelectorAll("input").forEach(inp => inp.addEventListener("input", recalcAll));
+      subjectsEl.appendChild(card);
+    });
+  }
+
+  function getState(){
+    return [...subjectsEl.querySelectorAll(".subjectCard")].map(card => ({
+      td: card.querySelector(".td").value,
+      exam: card.querySelector(".exam").value
+    }));
+  }
+  function save(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(getState())); }catch(e){}
+  }
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return null;
+      const arr = JSON.parse(raw);
+      if(!Array.isArray(arr)) return null;
+      return arr;
+    }catch(e){ return null; }
+  }
+
+  function recalcAll(){
+    const cards = [...subjectsEl.querySelectorAll(".subjectCard")];
+    let sumWeighted = 0;
+    let filled = 0;
+
+    cards.forEach((card, i) => {
+      const td = parseNum(card.querySelector(".td").value);
+      const exam = parseNum(card.querySelector(".exam").value);
+
+      const avg = computeSubjectAvg(td, exam);
+      const coef = subjectsData[i].coef;
+
+      const weighted = Number.isFinite(avg) ? avg * coef : NaN;
+
+      card.querySelector(".avg").textContent = fmt2(avg);
+      card.querySelector(".weighted").textContent = fmt2(weighted);
+
+      if (Number.isFinite(avg)) filled++;
+      if (Number.isFinite(weighted)) sumWeighted += weighted;
+    });
+
+    const overall = sumWeighted / TOTAL_COEF;
+
+    overallEl.textContent = fmt2(overall);
+    sumWeightedEl.textContent = sumWeighted.toFixed(2);
+    filledCountEl.textContent = String(filled);
+
+    if (overall > 10) successMsg.classList.add("show");
+    else successMsg.classList.remove("show");
+
+    save();
+  }
+
+  function resetAll(){
+    [...subjectsEl.querySelectorAll(".subjectCard")].forEach(card => {
+      card.querySelector(".td").value = "";
+      card.querySelector(".exam").value = "";
+    });
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    recalcAll();
+  }
+
+  function fillDemo(){
+    const demo = [
+      [12, 14],[10, 11],[13, 15],[9.5, 12],[8, 10],
+      [11, 13],[14, 16],[12, 12],[10, 12],[13, 14],[9, 11],[12, 13]
+    ];
+    [...subjectsEl.querySelectorAll(".subjectCard")].forEach((card, i) => {
+      card.querySelector(".td").value = demo[i][0];
+      card.querySelector(".exam").value = demo[i][1];
+    });
+    recalcAll();
+  }
+
+  // init
+  render();
+  const st = load();
+  if (st && st.length === subjectsData.length){
+    [...subjectsEl.querySelectorAll(".subjectCard")].forEach((card, i) => {
+      card.querySelector(".td").value = st[i]?.td ?? "";
+      card.querySelector(".exam").value = st[i]?.exam ?? "";
+    });
+  }
+  recalcAll();
+
+  resetBtn.addEventListener("click", resetAll);
+  fillDemoBtn.addEventListener("click", fillDemo);
+</script>
+</body>
+</html>
